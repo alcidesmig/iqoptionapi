@@ -688,6 +688,14 @@ class IQ_Option:
                     pass
             time.sleep(polling_time)
 
+    def check_win_v4(self, id_number): #de https://github.com/dsinmsdj/iqoptionapi/blob/master/iqoptionapi/stable_api.py
+           while True:
+                  result = self.get_optioninfo_v2(10)
+                  if result['msg']['closed_options'][0]['id'][0] == id_number and result['msg']['closed_options'][0]['id'][0] != None:          
+                         return result['msg']['closed_options'][0]['win'],(result['msg']['closed_options'][0]['win_amount']-result['msg']['closed_options'][0]['amount'] if result['msg']['closed_options'][0]['win'] != 'equal' else 0)
+                         break
+                  time.sleep(1)      
+
     def check_win_v3(self, id_number):
         while True:
             try:
@@ -960,7 +968,7 @@ class IQ_Option:
 
         dateFormated = str(datetime.utcfromtimestamp(
             exp).strftime("%Y%m%d%H%M"))
-        instrument_id = "do" + active + dateFormated + \
+        instrument_id = "do" + str(active) + dateFormated + \
                         "PT" + str(duration) + "M" + action + "SPT"
         self.api.digital_option_placed_id = None
 
@@ -1102,6 +1110,24 @@ class IQ_Option:
                     return data["msg"]["position"]["pnl_realized"] - data["msg"]["position"]["buy_amount"]
 
     def check_win_digital_v2(self, buy_order_id):
+
+        while self.get_async_order(buy_order_id)["position-changed"] == {}:
+            pass
+        order_data = self.get_async_order(buy_order_id)["position-changed"]["msg"]
+        #print(order_data)
+        if order_data != None:
+            while order_data["status"] != "closed":
+                order_data = self.get_async_order(buy_order_id)["position-changed"]["msg"]
+                time.sleep(2)
+            if order_data["close_reason"] == "expired":
+                return True, order_data["close_profit"] - order_data["invest"]
+            elif order_data["close_reason"] == "default":
+                return True, order_data["pnl_realized"]
+        else:
+            return False, None
+
+
+    def check_win_digital_v3(self, buy_order_id):
 
         while self.get_async_order(buy_order_id)["position-changed"] == {}:
             pass
