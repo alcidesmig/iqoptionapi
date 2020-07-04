@@ -211,7 +211,7 @@ for type_name, data in ALL_Asset.items():
 ### View all ACTIVES Name
 you will get right all ACTIVES and code
 
-[ACTIVES](iqoptionapi/constants.py)
+[ACTIVES](constants.py)
 
 ```python
 print(I_want_money.get_all_ACTIVES_OPCODE())

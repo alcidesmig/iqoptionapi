@@ -1118,7 +1118,7 @@ class IQ_Option:
         if order_data != None:
             while order_data["status"] != "closed":
                 order_data = self.get_async_order(buy_order_id)["position-changed"]["msg"]
-                time.sleep(2)
+                time.sleep(10)
             if order_data["close_reason"] == "expired":
                 return True, order_data["close_profit"] - order_data["invest"]
             elif order_data["close_reason"] == "default":
