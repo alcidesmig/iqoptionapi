@@ -278,7 +278,7 @@ class IQ_Option:
                 end = schedule_time["close"]
                 if start < time.time() < end:
                     OPEN_TIME["digital"][name]["open"] = True
-
+        '''
         # for OTHER
         instrument_list = ["cfd", "forex", "crypto"]
         for instruments_type in instrument_list:
@@ -292,7 +292,7 @@ class IQ_Option:
                     end = schedule_time["close"]
                     if start < time.time() < end:
                         OPEN_TIME[instruments_type][name]["open"] = True
-
+        '''
         return OPEN_TIME
 
     # --------for binary option detail
